@@ -1,6 +1,46 @@
-/* SetCookies */
+/* basic functions*/
+function navCreateCookie(name, value, days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		var expires = "; expires=" + date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function navReadCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
+}
+
+function navEraseCookie(name) {
+	createCookie(name, "", -1);
+}
+
+/* game settings */
+function initgame() {
+	navCreateCookie("cc_nbCookies", "0", 999);
+	navCreateCookie("cc_nbMaxCookie", "0", 999);
+	navCreateCookie("cc_CookiesParSec", "0", 999);
+	
+	navCreateCookie("cc_autoMouseClickerLv", "0", 999);
+	navCreateCookie("cc_cookieFarmingLv", "0", 999);
+	navCreateCookie("cc_cookieFactoryLv", "0", 999);
+
+	navCreateCookie("cc_coutUpgradeAMC", "5", 999);
+	navCreateCookie("cc_coutUpgradeCFar", "100", 999);
+	navCreateCookie("cc_coutUpgradeCFac", "500", 999);
+}
+
 function resetGame() {
-    document.getElementById("nbCookies").innerHTML = 0;
+	document.getElementById("nbCookies").innerHTML = 0;
 	document.getElementById("AMC").style.backgroundColor = "grey";
 	document.getElementById("CFar").style.backgroundColor = "grey";
 	document.getElementById("CFac").style.backgroundColor = "grey";
@@ -10,16 +50,16 @@ function resetGame() {
 	document.getElementById("CookiesParSec").innerHTML = 0;
 }
 
-function addCookie(nbCookies) {
-    var cookieElement = document.getElementById("nbCookies");
-    var cookieMaxElement = document.getElementById("nbMaxCookie");
-	var newNbCookie = (parseFloat(cookieElement.innerHTML) + nbCookies).toFixed(1);
-	var nbMaxCookies = parseFloat(cookieMaxElement.innerHTML);
-	
-    cookieElement.innerHTML = newNbCookie;
+/* SetCookies */
+function addCookie(quantityAdded) {
+	var nbCookie = parseFloat(navReadCookie("cc_nbCookies"));
+	var nbMaxCookie = parseFloat(navReadCookie("cc_nbMaxCookie"));
+	var newNbCookie = nbCookie + quantityAdded;
 
-    if (nbMaxCookies < newNbCookie) {
-        cookieMaxElement.innerHTML = newNbCookie;
+	navCreateCookie("cc_nbCookies", newNbCookie.toString(), 999);
+
+	if (newNbCookie > nbMaxCookie) {
+		navCreateCookie("cc_nbMaxCookie", newNbCookie.toString(), 999);
     }
 }
 
@@ -124,7 +164,7 @@ function winCookies() {
 	var nbCookieParSeconde = 0;
 
 	if (AMCLv > 0) {
-		var cookiesgagnes = (0.1 + ((AMCLv-1)*0.2));
+		var cookiesgagnes = 0.1 + ((AMCLv-1)*0.2);
 		addCookie(cookiesgagnes);
 		nbCookieParSeconde += cookiesgagnes;
 	}
@@ -134,12 +174,23 @@ function winCookies() {
 		nbCookieParSeconde += cookiesgagnes;
 	}
 	if (CFacLv > 0) {
-		var cookiesgagnes = 13 + ((CFarLv-1) * 1.4);
+		var cookiesgagnes = 8 + ((CFarLv-1) * 7);
 		addCookie(cookiesgagnes);
 		nbCookieParSeconde += cookiesgagnes;
 	}
 	cookieParSecElement.innerHTML = nbCookieParSeconde;
 }
 
+function showData() {
+	var nbCookie = parseFloat(navReadCookie("cc_nbCookies"));
+	var nbMaxCookie = parseFloat(navReadCookie("cc_nbMaxCookie"));
+	
+	document.getElementById("nbCookies").innerHTML = nbCookie.toFixed(1);
+	document.getElementById("nbMaxCookie").innerHTML = nbMaxCookie.toFixed(1);
+}
+
 setInterval("changeUpgradeBackgroundColor()", 100);
 setInterval("winCookies()", 1000);
+setInterval("showData()", 100);
+
+initgame();
