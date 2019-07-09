@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="js.js"></script>
+    </head>
+    <body>
+        <nav>
+            <a href="#" onclick="resetNbTotalCookies()">Reset</a>
+
+        </nav>
+        <main>
+            <section id="leftPart">
+                <section id="CookieStatus">
+                    <div>Nombre de cookies : <strong id="nbTotalCookie">0</strong></div>
+					<div>Meilleur score de cookies : <strong id="nbMaxCookie">0</strong></div>
+                    <div><a href="#"><img src="cookie.png" alt="cookie" onclick="addCookie(1)"></a></div> 
+                </section>
+            </section>
+            <section id="rightPart">
+                <a class="powerrup" id="AMC" href="#" onclick="upgradeAutomouseClicker()">Automouse clicker - Lv <span id="autoMouseClickerLv">0</span> - Required 5</a>
+				<a class="powerrup" id="CFar" href="#" onclick="upgradeCookieFarming()">Cookie farming - Lv <span id="cookieFarmingLv">0</span> - Required 100</a>
+				<a class="powerrup" id="CFac" href="#" onclick="upgradeCookieFactory()">Cookie factory - Lv <span id="cookieFactoryLv">0</span> - Required 500</a>
+				<span id="upgradeLog"></span>
+            </section>
+        </main>
+    </body>
+</html>
