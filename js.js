@@ -1,16 +1,20 @@
 /* SetCookies */
-function resetnbCookiess() {
+function resetGame() {
     document.getElementById("nbCookies").innerHTML = 0;
 	document.getElementById("AMC").style.backgroundColor = "grey";
 	document.getElementById("CFar").style.backgroundColor = "grey";
 	document.getElementById("CFac").style.backgroundColor = "grey";
+	document.getElementById("autoMouseClickerLv").innerHTML = 0;
+	document.getElementById("cookieFarmingLv").innerHTML = 0;
+	document.getElementById("cookieFactoryLv").innerHTML = 0;
+	document.getElementById("CookiesParSec").innerHTML = 0;
 }
 
 function addCookie(nbCookies) {
     var cookieElement = document.getElementById("nbCookies");
     var cookieMaxElement = document.getElementById("nbMaxCookie");
-    var newNbCookie = parseInt(cookieElement.innerHTML) + 1;
-    var nbMaxCookies = parseInt(cookieMaxElement.innerHTML);
+	var newNbCookie = (parseFloat(cookieElement.innerHTML) + nbCookies).toFixed(1);
+	var nbMaxCookies = parseFloat(cookieMaxElement.innerHTML);
 	
     cookieElement.innerHTML = newNbCookie;
 
@@ -39,8 +43,6 @@ function verifyUpgrade(upgradeName) {
 				var AMCLvElement = document.getElementById("autoMouseClickerLv");
 				var newLv = parseInt(AMCLvElement.innerHTML) + 1;
 				AMCLvElement.innerHTML = newLv;
-				if (nbCookies - coutUpgrade1 < coutUpgrade1)
-					AMCElement.style.backgroundColor = "grey";
 				loseCookies(coutUpgrade1);
 			}
 			break;
@@ -50,8 +52,6 @@ function verifyUpgrade(upgradeName) {
 				var CFarLvElement = document.getElementById("cookieFarmingLv");
 				var newLv = parseInt(CFarLvElement.innerHTML) + 1;
 				CFarLvElement.innerHTML = newLv;
-				if (nbCookies - coutUpgrade2 < coutUpgrade2)
-					CFarElement.style.backgroundColor = "grey";
 				loseCookies(coutUpgrade2);
 			}
 			break;
@@ -62,9 +62,7 @@ function verifyUpgrade(upgradeName) {
 				var newLv = parseInt(CFacLvElement.innerHTML) + 1;
 
 				CFacLvElement.innerHTML = newLv;
-				if (nbCookies - coutUpgrade3 < coutUpgrade3)
-					CFacElement.style.backgroundColor = "grey";
-				loseCookies(500);
+				loseCookies(coutUpgrade3);
 			}
 			break;
 		default:
@@ -73,23 +71,75 @@ function verifyUpgrade(upgradeName) {
 }
 
 /* Checking */
-function checkUpgradePossible() {
-	var cookieElement = document.getElementById("nbCookies");
+function changeUpgradeBackgroundColor() {
+	var coutUpgrade1 = 5;
+	var coutUpgrade2 = 100;
+	var coutUpgrade3 = 500;
+	var nbCookies = parseInt(document.getElementById("nbCookies").innerHTML);
 	var AMCElement = document.getElementById("AMC");
 	var CFarElement = document.getElementById("CFar");
 	var CFacElement = document.getElementById("CFac");
 	
-	if(parseInt(cookieElement.innerHTML) >= 5)
-		AMCElement.style.backgroundColor = "red";
+	if (nbCookies >= coutUpgrade1) {
+		var backgroundColor = AMCElement.style.backgroundColor;
+		if (backgroundColor == "" || backgroundColor == "grey")
+			AMCElement.style.backgroundColor = "rgb(27, 109, 216)";
+	}
+	else {
+		var backgroundColor = AMCElement.style.backgroundColor;
+		if (backgroundColor == "rgb(27, 109, 216)")
+			AMCElement.style.backgroundColor = "grey";
+	}
+
 	
-	if(parseInt(cookieElement.innerHTML) >= 100)
-		CFarElement.style.backgroundColor = "red";
+	if (nbCookies >= coutUpgrade2) {
+		var backgroundColor = CFarElement.style.backgroundColor;
+		if (backgroundColor == "" || backgroundColor == "grey")
+			CFarElement.style.backgroundColor = "rgb(27, 109, 216)";
+	}
+	else {
+		var backgroundColor = CFarElement.style.backgroundColor;
+		if (backgroundColor == "rgb(27, 109, 216)")
+			CFarElement.style.backgroundColor = "grey";
+	}
+
 	
-	if(parseInt(cookieElement.innerHTML) >= 500)
-		CFacElement.style.backgroundColor= "red";
+	if (nbCookies >= coutUpgrade3) {
+		var backgroundColor = CFacElement.style.backgroundColor;
+		if (backgroundColor == "" || backgroundColor == "grey")
+			CFacElement.style.backgroundColor = "rgb(27, 109, 216)";
+	}
+	else {
+		var backgroundColor = CFacElement.style.backgroundColor;
+		if (backgroundColor == "rgb(27, 109, 216)")
+			CFacElement.style.backgroundColor = "grey";
+	}
 }
 
+function winCookies() {
+	var AMCLv = parseInt(document.getElementById("autoMouseClickerLv").innerHTML);
+	var CFarLv = parseInt(document.getElementById("cookieFarmingLv").innerHTML);
+	var CFacLv = parseInt(document.getElementById("cookieFactoryLv").innerHTML);
+	var cookieParSecElement = document.getElementById("CookiesParSec");
+	var nbCookieParSeconde = 0;
 
+	if (AMCLv > 0) {
+		var cookiesgagnes = (0.1 + ((AMCLv-1)*0.2));
+		addCookie(cookiesgagnes);
+		nbCookieParSeconde += cookiesgagnes;
+	}
+	if (CFarLv > 0) {
+		var cookiesgagnes = 2 + ((CFarLv-1) * 1.3);
+		addCookie(cookiesgagnes);
+		nbCookieParSeconde += cookiesgagnes;
+	}
+	if (CFacLv > 0) {
+		var cookiesgagnes = 13 + ((CFarLv-1) * 1.4);
+		addCookie(cookiesgagnes);
+		nbCookieParSeconde += cookiesgagnes;
+	}
+	cookieParSecElement.innerHTML = nbCookieParSeconde;
+}
 
-setInterval("checkUpgradePossible()", 100);
+setInterval("changeUpgradeBackgroundColor()", 100);
 setInterval("winCookies()", 1000);
