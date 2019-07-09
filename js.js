@@ -63,9 +63,10 @@ function addCookie(quantityAdded) {
     }
 }
 
-function loseCookies(nbCookies) {
-	var cookieElement = document.getElementById("nbCookies");
-	cookieElement.innerHTML = parseInt(cookieElement.innerHTML) - nbCookies;
+function loseCookies(quantityDeleted) {
+	var nbCookie = parseFloat(navReadCookie("cc_nbCookies"));
+	var newNbCookie = parseFloat(nbCookie - quantityDeleted);
+	navCreateCookie("cc_nbCookies", newNbCookie.toString(), 999);
 }
 
 /* Upgrades */
@@ -183,7 +184,7 @@ function winCookies() {
 
 function showData() {
 	var nbCookie = parseFloat(navReadCookie("cc_nbCookies"));
-	var nbMaxCookie = parseFloat(navReadCookie("cc_nbMaxCookie"));
+	var nbMaxCookie = parseFloat(navReadCookie("cc_nbMaxCookie"));	
 	
 	document.getElementById("nbCookies").innerHTML = nbCookie.toFixed(1);
 	document.getElementById("nbMaxCookie").innerHTML = nbMaxCookie.toFixed(1);

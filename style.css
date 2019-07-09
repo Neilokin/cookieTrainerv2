@@ -49,8 +49,6 @@ a.powerrup {
     float: left;
 }
 
-a.powerrup:hover { background-color: orangered; }
-
 a.powerrup img {
     padding: 5px;
     width: 40px;
