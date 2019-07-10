@@ -25,10 +25,12 @@ function navEraseCookie(name) {
 }
 
 /* game settings */
-function initgame() {
+function initData() {
+	
 	navCreateCookie("cc_nbCookies", "0", 999);
 	navCreateCookie("cc_nbMaxCookie", "0", 999);
 	navCreateCookie("cc_CookiesParSec", "0", 999);
+	navCreateCookie("cc_lastNbCookie", "0", 999);
 	
 	navCreateCookie("cc_autoMouseClickerLv", "0", 999);
 	navCreateCookie("cc_cookieFarmingLv", "0", 999);
@@ -41,13 +43,17 @@ function initgame() {
 
 function resetGame() {
 	document.getElementById("nbCookies").innerHTML = 0;
-	document.getElementById("AMC").style.backgroundColor = "grey";
-	document.getElementById("CFar").style.backgroundColor = "grey";
-	document.getElementById("CFac").style.backgroundColor = "grey";
+	document.getElementById("AMC").style.backgroundColor = "";
+	document.getElementById("CFar").style.backgroundColor = "";
+	document.getElementById("CFac").style.backgroundColor = "";
 	document.getElementById("autoMouseClickerLv").innerHTML = 0;
 	document.getElementById("cookieFarmingLv").innerHTML = 0;
 	document.getElementById("cookieFactoryLv").innerHTML = 0;
 	document.getElementById("CookiesParSec").innerHTML = 0;
+
+	var nbCookieMax = navReadCookie("cc_nbMaxCookie");
+	initData();
+	navCreateCookie("cc_nbMaxCookie", nbCookieMax.toString(), 999);
 }
 
 /* SetCookies */
@@ -82,7 +88,8 @@ function verifyUpgrade(upgradeName) {
 			if (nbCookie >= coutUpgradeAMC) {
 				var AMCLv = parseInt(navReadCookie("cc_autoMouseClickerLv"));
 				var newLv = AMCLv + 1;
-				navCreateCookie("cc_autoMouseClickerLv", newLv.toString() ,999);
+				navCreateCookie("cc_autoMouseClickerLv", newLv.toString(), 999);
+				navCreateCookie("cc_coutUpgradeAMC", coutUpgradeAMC * 1.1, 999);
 				loseCookies(coutUpgradeAMC);
 			}
 			break;
@@ -91,6 +98,7 @@ function verifyUpgrade(upgradeName) {
 				var AMCLv = parseInt(navReadCookie("cc_cookieFarmingLv"));
 				var newLv = AMCLv + 1;
 				navCreateCookie("cc_cookieFarmingLv", newLv.toString(), 999);
+				navCreateCookie("cc_coutUpgradeCFar", coutUpgradeCFar * 1.2, 999);
 				loseCookies(coutUpgradeCFar);
 			}
 			break;
@@ -99,6 +107,7 @@ function verifyUpgrade(upgradeName) {
 				var AMCLv = parseInt(navReadCookie("cc_cookieFactoryLv"));
 				var newLv = AMCLv + 1;
 				navCreateCookie("cc_cookieFactoryLv", newLv.toString(), 999);
+				navCreateCookie("cc_coutUpgradeCFac", coutUpgradeCFac * 1.4, 999);
 				loseCookies(coutUpgradeFac);
 			}
 			break;
@@ -157,24 +166,36 @@ function winCookies() {
 	var AMCLv = parseInt(document.getElementById("autoMouseClickerLv").innerHTML);
 	var CFarLv = parseInt(document.getElementById("cookieFarmingLv").innerHTML);
 	var CFacLv = parseInt(document.getElementById("cookieFactoryLv").innerHTML);
-	var nbCookieParSeconde = 0;
 
 	if (AMCLv > 0) {
 		var cookiesgagnes = 0.1 + ((AMCLv-1)*0.2);
 		addCookie(cookiesgagnes);
-		nbCookieParSeconde += cookiesgagnes;
 	}
 	if (CFarLv > 0) {
 		var cookiesgagnes = 2 + ((CFarLv-1) * 1.3);
 		addCookie(cookiesgagnes);
-		nbCookieParSeconde += cookiesgagnes;
 	}
 	if (CFacLv > 0) {
 		var cookiesgagnes = 8 + ((CFarLv-1) * 7);
 		addCookie(cookiesgagnes);
-		nbCookieParSeconde += cookiesgagnes;
 	}
-	navCreateCookie("cc_CookiesParSec", nbCookieParSeconde.toString(), 999);
+}
+
+function checkNbCookieParSec() {
+	
+	var ancienNbCookie = parseFloat(navReadCookie("cc_lastNbCookie"));
+	var nbCookieActuel = parseFloat(navReadCookie("cc_nbCookies"));
+	var nouveauCPS = (nbCookieActuel - ancienNbCookie);
+
+	navCreateCookie("cc_CookiesParSec", nouveauCPS.toString(), 999);
+	navCreateCookie("cc_lastNbCookie", nbCookieActuel.toString(), 999);
+	console.log("OLD : " + ancienNbCookie + " - PRESENT : " + nbCookieActuel+" - CPS : " + nouveauCPS);
+}
+
+function controller() {
+	setInterval("changeUpgradeBackgroundColor()", 100);
+	setInterval("checkNbCookieParSec()", 1000)
+	setInterval("winCookies()", 1000);
 }
 
 function vue() {
@@ -199,12 +220,7 @@ function vue() {
 	document.getElementById("coutCFac").innerHTML = coutUpgradeCFac.toFixed(1);
 }
 
-function controller() {
-	setInterval("changeUpgradeBackgroundColor()", 100);
-	setInterval("winCookies()", 1000);
-}
 
-
-initgame();
+initData();
 controller();
 setInterval("vue()", 100);
